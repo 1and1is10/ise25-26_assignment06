@@ -18,6 +18,28 @@ public class UsersSystemTests extends AbstractSysTest {
         assertEqualsIgnoringIdAndTimestamps(createdUser, userToCreate);
     }
 
-    //cTODO: Add at least two additional tests for user operations
+    //TODO: Add at least two additional tests for user operations
+    @Test
+    void getAllCreatedUsers() {
+        List<User> createdUserList = TestFixtures.createUsers(userService);
 
+        List<User> retrievedUser = userRequests.retrieveAll()
+                .stream()
+                .map(userDtoMapper::toDomain)
+                .toList();
+
+        assertEqualsIgnoringTimestamps(retrievedUser, createdUserList);
+    }
+
+    @Test
+    void getUserById() {
+        List<User> createdUserList = TestFixtures.createUsers(userService);
+        User createdUser = createdUserList.getFirst();
+
+        User retrievedUser = userDtoMapper.toDomain(
+                userRequests.retrieveById(createdUser.id())
+        );
+
+        assertEqualsIgnoringTimestamps(retrievedUser, createdUser);
+    }
 }
